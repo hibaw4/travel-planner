@@ -13,7 +13,7 @@
         android:theme="@style/Theme.TravelPlanner"
         tools:targetApi="31">
 
-        <!-- SplashActivity : page de démarrage -->
+        <!-- SplashActivity: Screen to launch on app startup -->
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"
@@ -24,21 +24,20 @@
             </intent-filter>
         </activity>
 
-        <!-- MainActivity : page après redirection -->
+        <!-- LoginActivity: User login screen -->
         <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.TravelPlanner" />
+            android:name=".activities.LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity> <!-- Corrected closing tag here -->
 
-        <activity android:name=".activities.RegisterActivity" />
-        <activity android:name=".activities.LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <!-- RegisterActivity: User registration screen -->
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:label="Register" />
+
     </application>
 
 </manifest>

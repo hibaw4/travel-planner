@@ -13,30 +13,39 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.travelplanner.activities.LoginActivity;
 import com.example.travelplanner.R;
+import com.example.travelplanner.activities.LoginActivity; // Import LoginActivity
+
+import android.util.Log;
 
 public class SplashActivity extends Activity {
 
-    private static final int SPLASH_DISPLAY_LENGTH = 3000; // Durée d'affichage : 3 secondes
+    private static final int SPLASH_DISPLAY_LENGTH = 3000; // Duration of splash screen (3 seconds)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash); // Lie au fichier activity_splash.xml
+        setContentView(R.layout.activity_splash);
 
-        // Liaison des vues (facultatif ici, mais utile si tu veux animer par exemple)
+        // Log pour vérifier si l'écran splash se charge
+        Log.d("SplashActivity", "Splash screen displayed");
+
+        // Optionally bind the views here (for animations or visual updates)
         ImageView logoImageView = findViewById(R.id.logoImageView);
         TextView sloganText = findViewById(R.id.sloganText);
         ProgressBar progressBar = findViewById(R.id.progressBar);
 
-        // Démarre un délai, puis lance LoginActivity ou autre
+        // Use Handler to delay the transition to LoginActivity
         new Handler().postDelayed(() -> {
+            Log.d("SplashActivity", "Redirecting to LoginActivity");
+            // Start LoginActivity after the splash screen
             Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish(); // Empêche de revenir au Splash en appuyant sur "Retour"
+            finish(); // Prevent going back to splash screen when pressing back
         }, SPLASH_DISPLAY_LENGTH);
     }
 }
+
+
 
 

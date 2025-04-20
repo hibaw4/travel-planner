@@ -4,7 +4,6 @@
 
 package com.example.travelplanner.activities;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -20,16 +19,20 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Button for navigating to the registration screen
         Button goToRegister = findViewById(R.id.buttonGoToRegister);
         goToRegister.setOnClickListener(v -> {
+            // Intent to go to the RegisterActivity
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
-            finish();
+            finish(); // Finish LoginActivity to prevent the user from returning to it when pressing the back button
         });
 
+        // Button for logging in
         Button loginButton = findViewById(R.id.buttonLogin);
         loginButton.setOnClickListener(v -> {
-            // Traiter la connexion ici...
+            // Handle login logic here...
         });
     }
 }
+
