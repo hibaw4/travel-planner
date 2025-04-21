@@ -55,6 +55,7 @@ dependencies {
     // AndroidX AppCompat (provides Theme.AppCompat.*)
     implementation "androidx.appcompat:appcompat:1.6.1"
 
+
     // (Optional, for Material Components themes)
     implementation "com.google.android.material:material:1.8.0"
 }
