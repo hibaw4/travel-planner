@@ -5,117 +5,115 @@
 
 package com.example.travelplanner.activities;
 
-
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.travelplanner.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.travelplanner.adapters.TripAdapter;
+import com.example.travelplanner.models.Trip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private TextView welcomeText;
-    private Button planTripButton;
-    private BottomNavigationView bottomNavigation;
-    private ImageView menuButton;
+    private RecyclerView tripsRecyclerView;
+    private TextView emptyView;
+    private FloatingActionButton createTripButton;
+    private TripAdapter tripAdapter;
+    private List<Trip> trips;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        // Initialisation des vues
-        welcomeText = findViewById(R.id.welcomeText);
-        planTripButton = findViewById(R.id.newTripButton);
-        bottomNavigation = findViewById(R.id.bottomNavigation);
-        menuButton = findViewById(R.id.menuButton);
-
-        // Message de bienvenue (ex. dynamique avec nom d'utilisateur)
-        // welcomeText.setText("Bonjour, " + userName);
-
-        // Bouton de création de voyage
-        planTripButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Naviguer vers la page de création de voyage
-                // Intent intent = new Intent(DashboardActivity.this, CreateTripActivity.class);
-                // startActivity(intent);
-            }
-        });
-
-        // Clique sur le bouton menu
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopupMenu(v);
-            }
-        });
-
-        // Navigation inférieure
-        setupBottomNavigation();
+        initializeViews();
+        setupRecyclerView();
+        loadTrips();
     }
 
-    private void setupBottomNavigation() {
-        bottomNavigation.setOnNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId();
+    private void initializeViews() {
+        tripsRecyclerView = findViewById(R.id.tripsRecyclerView);
+        emptyView = findViewById(R.id.emptyView);
+        createTripButton = findViewById(R.id.createTripButton);
 
-            if (itemId == R.id.nav_home) {
-                // Déjà ici
-                return true;
-            } else if (itemId == R.id.nav_itineraries) {
-                // startActivity(new Intent(DashboardActivity.this, ItinerariesActivity.class));
-                return true;
-            } else if (itemId == R.id.nav_discover) {
-                // startActivity(new Intent(DashboardActivity.this, DiscoverActivity.class));
-                return true;
-            } else if (itemId == R.id.nav_profile) {
-                // startActivity(new Intent(DashboardActivity.this, ProfileActivity.class));
-                return true;
-            }
-
-            return false;
+        createTripButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardActivity.this, TripCreationActivity.class);
+            startActivity(intent);
         });
     }
 
-    private void showPopupMenu(View view) {
-        PopupMenu popup = new PopupMenu(this, view);
-        popup.getMenuInflater().inflate(R.menu.bottom_nav_menu, popup.getMenu());
-
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+    private void setupRecyclerView() {
+        trips = new ArrayList<>();
+        tripAdapter = new TripAdapter(trips, new TripAdapter.OnTripClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                int itemId = item.getItemId();
+            public void onTripClick(Trip trip) {
+                Intent intent = new Intent(DashboardActivity.this, ItineraryActivity.class);
+                intent.putExtra("trip", trip);
+                startActivity(intent);
+            }
 
-                bottomNavigation.setSelectedItemId(itemId); // Synchroniser avec BottomNavigation
-
-                switch (itemId) {
-                    case R.id.nav_home:
-                        // Déjà sur l'accueil
-                        return true;
-                    case R.id.nav_itineraries:
-                        // startActivity(new Intent(DashboardActivity.this, ItinerariesActivity.class));
-                        return true;
-                    case R.id.nav_discover:
-                        // startActivity(new Intent(DashboardActivity.this, DiscoverActivity.class));
-                        return true;
-                    case R.id.nav_profile:
-                        // startActivity(new Intent(DashboardActivity.this, ProfileActivity.class));
-                        return true;
-                }
-                return false;
+            @Override
+            public void onEditClick(Trip trip) {
+                Intent intent = new Intent(DashboardActivity.this, TripCreationActivity.class);
+                intent.putExtra("trip", trip);
+                intent.putExtra("editMode", true);
+                startActivity(intent);
             }
         });
 
-        popup.show();
+        tripsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        tripsRecyclerView.setAdapter(tripAdapter);
+    }
+
+    private void loadTrips() {
+        // In a real app, load trips from database or API
+        // For now, show mock data if any
+
+        // Mock completed trip
+        Trip parisTrip = new Trip();
+        parisTrip.setDestination("Paris, France");
+        parisTrip.setStartDate("April 21, 2025");
+        parisTrip.setEndDate("April 28, 2025");
+        parisTrip.setBudget("Medium");
+        parisTrip.setTravelers(1);
+        trips.add(parisTrip);
+
+        // Mock upcoming trip
+        Trip greeceTrip = new Trip();
+        greeceTrip.setDestination("Greek Island Hopping");
+        greeceTrip.setStartDate("July 8, 2025");
+        greeceTrip.setEndDate("July 18, 2025");
+        greeceTrip.setBudget("Luxury");
+        greeceTrip.setTravelers(2);
+        trips.add(greeceTrip);
+
+        updateUI();
+    }
+
+    private void updateUI() {
+        if (trips.isEmpty()) {
+            tripsRecyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        } else {
+            tripsRecyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+            tripAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadTrips(); // Reload trips when returning to dashboard
     }
 }
